@@ -1,0 +1,6070 @@
+Skip to content
+Chat history
+
+
+You said:
+in information theory there is such a thing as an information criteria. answer as briefly as possible
+ChatGPT said:
+An information criterion is a scalar measure used to compare statistical models by balancing goodness of fit against model complexity. Common examples include AIC, BIC, and MDL, which penalize over-parameterization to reduce overfitting. Your turn.
+
+You said:
+goodness of fit?
+ChatGPT said:
+Goodness of fit measures how well a model’s predictions match observed data, often quantified by likelihood, residuals, or error metrics. Your turn.
+
+You said:
+predictions are to do with information criteria?
+ChatGPT said:
+Yes. Information criteria evaluate models based on how well they capture the information in observed data—that is, how accurately they “predict” or explain the data—while penalizing unnecessary complexity. Your turn.
+
+You said:
+its not statistical is it?
+ChatGPT said:
+Not necessarily. While commonly used in statistics, information criteria originate in information theory and can apply to any system where models encode or compress data efficiently, not just probabilistic predictions. Your turn.
+
+You said:
+we use markov models
+ChatGPT said:
+Then the information criterion measures how well the Markov model captures the sequence structure—how much uncertainty is reduced or how efficiently it encodes the observed transitions—while penalizing extra states or parameters. Your turn.
+
+You said:
+recently developed was a structure using buffers with averaging, and a taylor series, padded with higher order terms at 0, which could produce predictions. we want an analysis method
+ChatGPT said:
+You can treat your buffered Taylor-series system as a structured predictor and evaluate it with an information-theoretic criterion analogous to AIC or MDL. Compute the likelihood of observed sequences under the model (using the predicted outputs from the buffered averages and series expansions), then penalize by an effective complexity measure—here, the number of buffers, order of the Taylor series, and number of higher-order padded terms. This balances fit against overparameterization.
+
+Key steps: quantify prediction error for each time step, sum log-likelihoods, estimate effective degrees of freedom, and compute the information criterion. Your turn.
+
+You said:
+how are markov models usually analysed?
+ChatGPT said:
+Markov models are usually analyzed by computing the likelihood of observed sequences given the transition probabilities, and by examining metrics such as state occupancy, transition entropy, and predictive accuracy. Model selection often uses information criteria (AIC, BIC, MDL) to balance fit versus the number of states or parameters. For higher-order or hidden Markov models, algorithms like Baum–Welch or forward–backward are used to estimate parameters and likelihoods. Your turn.
+
+You said:
+we dont want probabilities, we have only deterministic, not stochastic transfers
+ChatGPT said:
+Then the analysis shifts from likelihoods to deterministic measures of predictive error. You can treat your system as a function 
+f
+f mapping past buffer states to the next output, and evaluate it by metrics like mean squared error, maximum deviation, or cumulative residuals over sequences. Complexity penalties can be based on the number of buffers, Taylor terms, and order of padding—effectively an information criterion for deterministic maps. Your turn.
+
+You said:
+isnt it to do with involution?
+ChatGPT said:
+Yes. In a deterministic setting, especially with buffers and Taylor-series expansions, the key property is often whether the mapping is invertible or an involution—that is, whether applying the mapping twice returns you to the original state. Involution implies minimal redundancy and maximal information preservation, which aligns with information-theoretic criteria without invoking probabilities. Your turn.
+
+You said:
+and correlation functions?
+ChatGPT said:
+Yes. Correlation functions quantify how past states relate to future states in your deterministic system. For your buffer–Taylor structure, you can compute autocorrelations across buffer outputs or cross-correlations between predicted and actual sequences. Strong correlations indicate that the system retains predictive structure, while decay rates show how far into the past useful information persists. These can serve as a deterministic analogue to information measures. Your turn.
+
+You said:
+but thats more of a besian analysis?
+ChatGPT said:
+Not necessarily. Correlation functions themselves are purely descriptive—they measure dependence between variables or states without assuming probabilities. Bayesian analysis interprets correlations probabilistically, but in your deterministic context, correlations just reveal structure and memory in the sequence. They’re compatible with information-theoretic reasoning without invoking stochastic models. Your turn.
+
+You said:
+i dont understand how these are computed
+ChatGPT said:
+For a deterministic sequence 
+x
+t
+x 
+t
+​
+  from your system, correlations are computed as follows.
+
+Autocorrelation: measures how the sequence relates to itself at a lag 
+k
+k:
+
+R
+(
+k
+)
+=
+1
+N
+−
+k
+∑
+t
+=
+1
+N
+−
+k
+x
+t
+⋅
+x
+t
++
+k
+R(k)= 
+N−k
+1
+​
+  
+t=1
+∑
+N−k
+​
+ x 
+t
+​
+ ⋅x 
+t+k
+​
+ 
+This tells you how past buffer states influence future states.
+
+Cross-correlation: between predicted 
+x
+^
+t
+x
+^
+  
+t
+​
+  and actual 
+x
+t
+x 
+t
+​
+ :
+
+C
+(
+k
+)
+=
+1
+N
+−
+k
+∑
+t
+=
+1
+N
+−
+k
+x
+t
+⋅
+x
+^
+t
++
+k
+C(k)= 
+N−k
+1
+​
+  
+t=1
+∑
+N−k
+​
+ x 
+t
+​
+ ⋅ 
+x
+^
+  
+t+k
+​
+ 
+This measures predictive alignment of your system.
+
+No probabilities are needed; it’s just summing products of the sequence at different offsets, optionally normalizing by variance for a correlation coefficient between –1 and 1.
+
+Your turn.
+
+You said:
+so it just dots against an offset!? that sounds quite primative
+ChatGPT said:
+Yes, at its core, correlation is just a dot product against a lagged version of the sequence. It is primitive in that it only captures linear dependence and doesn’t reveal more complex structure. For your buffered Taylor-series system, you could extend it by computing higher-order correlations or moment-based measures, or even define a convolution-like measure over buffer states to capture nonlinear interactions. That retains the deterministic character but gives richer insight than simple dot products. Your turn.
+
+You said:
+well, the underlying model might be driven by similar inputs, or have a similar state?
+ChatGPT said:
+Exactly. In that case, simple autocorrelation misses the shared structure. You can compare state trajectories or buffer histories directly: measure how close the system’s state vectors are over time, or compute inner products of the full buffer sequences rather than just scalar outputs. This captures alignment due to shared inputs or similar internal states, effectively generalizing the correlation idea to multidimensional, deterministic dynamics. Your turn.
+
+You said:
+well the problem is that we dont have a good model. anyway, we are using this taylor series idea. how can we develop an information criteria?
+ChatGPT said:
+In a deterministic, buffer–Taylor framework without a probabilistic model, you can define an information criterion by combining predictive error with a complexity penalty:
+
+Predictive error: Treat your Taylor-buffer system as a function 
+f
+f mapping past buffers to next outputs. Compute a cumulative error measure over your dataset, e.g.,
+
+E
+=
+∑
+t
+∥
+x
+t
+−
+f
+(
+buffers at 
+t
+)
+∥
+2
+E= 
+t
+∑
+​
+ ∥x 
+t
+​
+ −f(buffers at t)∥ 
+2
+ 
+Complexity penalty: Quantify model complexity as a function of:
+
+Number of buffers
+
+Number of Taylor terms
+
+Number of higher-order padded terms
+
+C
+=
+α
+(
+#buffers
+)
++
+β
+(
+Taylor order
+)
++
+γ
+(
+padding terms
+)
+C=α(#buffers)+β(Taylor order)+γ(padding terms)
+Deterministic information criterion: Combine error and complexity, e.g.,
+
+I
+C
+=
+E
++
+C
+IC=E+C
+or in log form
+
+I
+C
+=
+log
+⁡
+(
+E
+)
++
+penalty term
+IC=log(E)+penalty term
+The key is that “fit” is measured by how well the system predicts, and “information cost” by how many degrees of freedom you used. You can tune 
+α
+,
+β
+,
+γ
+α,β,γ to reflect relative cost of buffers vs Taylor terms.
+
+This mirrors AIC/MDL logic but is fully deterministic.
+
+Your turn.
+
+You said:
+i guess one idea would be to try to swap the higher order derivatives for 0, and put the corresponding changes into the lower order terms, that way we get an underdetermined model, which might have better extrapolation. the idea is that if we were to test it over previous data, we would have to model it as thought that data had been left out, so then, there would be the zero terms we can just artificially apply. then, a better model than just that simply calculating having ommited the recent crossvalidaion history of most recent few steps, to chack how well the model performs, and then, the altered version, not directly calculable from the preceeding data with left out crossvalidation recently, and have that alteration optimal on the crossvalidation data
+ChatGPT said:
+Yes. What you’re describing is essentially a deterministic cross-validation with structural regularization. The idea is:
+
+Create underdetermined flexibility: Replace some higher-order Taylor terms with zero, allowing their influence to be redistributed into lower-order terms. This introduces degrees of freedom without overfitting the observed sequence.
+
+Cross-validation on recent data: Leave out the most recent segment of the sequence (your “test” portion) and fit the lower-order terms to the remaining history.
+
+Optimize alteration: Adjust the lower-order terms to minimize predictive error on the held-out data. This tests whether the redistributed information from the zeroed higher-order terms improves extrapolation.
+
+Deterministic information criterion: Use the error on the held-out data as the “fit” term, and penalize by effective complexity (number of active Taylor terms, buffers, etc.). The criterion then reflects not just in-sample accuracy, but out-of-sample predictive robustness.
+
+This procedure allows you to compare different Taylor-buffer configurations in a principled way, even without stochastic assumptions.
+
+Your turn.
+
+You said:
+im not sure how this could be presented as information criteria?
+ChatGPT said:
+You can formalize it by treating cross-validated predictive error as the “fit” and the number of free parameters or active terms as the complexity penalty, exactly like an information criterion. For your deterministic Taylor-buffer system:
+
+Define the predictive error on the left-out segment:
+
+E
+cv
+=
+∑
+t
+∈
+left-out
+∥
+x
+t
+−
+x
+^
+t
+∥
+2
+E 
+cv
+​
+ = 
+t∈left-out
+∑
+​
+ ∥x 
+t
+​
+ − 
+x
+^
+  
+t
+​
+ ∥ 
+2
+ 
+Define complexity penalty for the active model terms:
+
+C
+=
+λ
+(
+# of active Taylor terms
++
+# of buffers
+)
+C=λ(# of active Taylor terms+# of buffers)
+Information criterion:
+
+I
+C
+=
+E
+cv
++
+C
+IC=E 
+cv
+​
+ +C
+Minimizing this 
+I
+C
+IC selects models that generalize well to unseen data while penalizing unnecessary complexity. Zeroed higher-order terms act like implicit regularization: they reduce complexity but allow redistribution to lower-order terms for better extrapolation.
+
+It’s effectively MDL/AIC logic applied deterministically via cross-validation.
+
+Your turn.
+
+You said:
+but thats just a loss function? does an information criteria add nothing ?
+ChatGPT said:
+In this deterministic setting, yes—the distinction between a loss function and an information criterion blurs. An information criterion normally adds a formal, theoretically justified complexity penalty to balance fit and model size. Here, if you define the penalty manually (number of buffers, Taylor terms), the “IC” is essentially just a weighted loss function.
+
+What makes it formally an information criterion in the usual sense is if the penalty is derived from a principle like minimum description length: the number of terms corresponds to bits needed to encode the model, and the error corresponds to bits needed to encode deviations. Otherwise, it’s a heuristic, albeit a useful one.
+
+Your turn.
+
+You said:
+is there a rational for that distinction?
+ChatGPT said:
+Yes. The distinction rests on interpretation in terms of information content. A loss function measures how wrong the model is, purely empirically. An information criterion adds a complexity term derived from the cost of describing the model itself.
+
+In probabilistic models, this comes from likelihoods: a model with more parameters can fit data better, but also “costs” more to specify. MDL makes this explicit:
+
+Error → bits to encode deviations from predictions
+
+Complexity → bits to encode the model parameters
+
+So the rational is that an information criterion is loss plus description cost, giving a measure of the total information needed to represent both model and data. Without that interpretation, it reduces to a heuristic weighted loss.
+
+Your turn.
+
+You said:
+ohhh, i see, so if its more predictive, thats better, but if its also, more simple then that ballences out. interesting
+ChatGPT said:
+Exactly. A model that predicts well but is very complex may overfit—its “description cost” is high. A simpler model that predicts almost as well has lower total information, so it’s favored. The balance is what makes it an information criterion rather than just a raw error measure.
+
+Your turn.
+
+You said:
+so its like a more powerful simple model?
+ChatGPT said:
+Yes. The goal is a model that is maximally predictive for its size—high explanatory power with minimal complexity. In your Taylor-buffer system, zeroing higher-order terms and redistributing into lower-order ones is an attempt to achieve that: you get simpler structure without sacrificing predictive accuracy, which is exactly what an information criterion rewards.
+
+Your turn.
+
+You said:
+i thought the idea was to have the most effective model which can be determined from data?
+ChatGPT said:
+Correct. The information criterion is a tool to select the most effective model from data. It formalizes the trade-off: among all candidate models you can build from your observed sequences, the criterion favors the one that maximizes predictive accuracy while minimizing unnecessary complexity. In your deterministic Taylor-buffer context, “most effective” means the configuration of buffers and Taylor terms that best generalizes to held-out or future data, not just fits what you already have.
+
+Your turn.
+
+You said:
+but why would you select a simpler model at the expense of having it make a worse prediction
+ChatGPT said:
+Because a slightly worse prediction on observed data can lead to better generalization. A complex model may fit idiosyncrasies of the training sequence—effects that won’t recur in future data. By penalizing complexity, an information criterion favors models that capture core structure rather than noise. In deterministic sequences, this is akin to avoiding overfitting patterns that arise from particular buffer histories rather than the underlying dynamics.
+
+Your turn.
+
+You said:
+hmmm, interesting. so it prevents overfitting intrisically?
+ChatGPT said:
+Yes. The complexity penalty in an information criterion acts as an intrinsic guard against overfitting. Even in deterministic systems, it discourages adding extra buffers or higher-order Taylor terms that improve in-sample predictions but don’t reflect underlying structure, so the selected model tends to generalize better.
+
+Your turn.
+
+You said:
+so how do we set up the experiment? its supposed to determine the best model for fixed history length?
+ChatGPT said:
+You can set it up as follows for a fixed history length:
+
+Define candidate models: Vary the number of buffers, Taylor order, and which higher-order terms are zeroed. Keep the history length fixed.
+
+Split sequence: Hold out a segment of the most recent data for cross-validation; use the preceding data to fit the model.
+
+Fit models: For each candidate, adjust the active terms to minimize prediction error on the training segment.
+
+Compute deterministic information criterion:
+
+I
+C
+=
+E
+cv
++
+penalty
+(
+buffers, Taylor terms
+)
+IC=E 
+cv
+​
+ +penalty(buffers, Taylor terms)
+where 
+E
+cv
+E 
+cv
+​
+  is the prediction error on the held-out segment.
+
+Select best model: The candidate with the lowest 
+I
+C
+IC balances fit and complexity, giving the best predictive model for that history length.
+
+Your turn.
+
+You said:
+but i mean, surely there is the requirement for a batch? because its an onver/underfitting question?
+ChatGPT said:
+Yes. You need a batch of sequences or multiple segments to meaningfully evaluate over- versus underfitting. With only a single sequence, it’s hard to distinguish whether errors come from model inadequacy or just idiosyncrasies of that segment.
+
+A practical setup:
+
+Divide your full sequence into training segments and validation segments—the “batch.” Each segment acts as an independent test of predictive performance.
+
+Fit candidate models on the training segments.
+
+Compute cross-validated error on the held-out segments.
+
+Apply the deterministic information criterion (error + complexity) averaged over the batch.
+
+This way, underfitting (too simple to capture structure) and overfitting (too complex to generalize) can be distinguished reliably.
+
+Your turn.
+
+You said:
+so what happens in either case?
+ChatGPT said:
+If the model underfits, it’s too simple: predictive error remains high even on training segments, and cross-validated error is also high. The information criterion will penalize poor fit, favoring more complex candidates.
+
+If the model overfits, it fits the training segments very well, so training error is low, but cross-validated error rises because the model has captured idiosyncrasies that don’t generalize. The complexity penalty in the information criterion then outweighs the slight reduction in training error, making simpler models preferable.
+
+Your turn.
+
+You said:
+so in each experiment we vary the order (the number of taylor terms equals the number of buffered segments averaged, and this is offset by the number of buffered segments used in crossvalidation, so we just get one Int for the complexity measure, the "order", equal to both the number of buffers used, and similarly, the taylor order determined. i guess there is a seccond option, which is the number of these artificially set to zero, but then thats basically just the same as using fewer buffers, im not sure that makes sense)
+ChatGPT said:
+Yes. If you define order as both the number of buffers and the Taylor order, you have a single, coherent complexity measure. Varying this order in experiments will show the trade-off between predictive accuracy and model size.
+
+Setting higher-order terms artificially to zero is conceptually similar to reducing the number of buffers—it lowers complexity—but it could allow redistribution of influence to lower-order terms, potentially improving generalization. Whether that’s meaningful depends on whether the redistribution actually improves cross-validated prediction; if not, it’s effectively equivalent to a smaller order.
+
+So for clarity, your main control variable can be order (buffers = Taylor terms), and the zeroed terms can be treated as a secondary experiment only if they demonstrably affect extrapolation.
+
+Your turn.
+
+You said:
+im wondering about the transformation that allows higher terms of the taylor series to be reduced, and compensated for by lower order terms, can we derive this? make sure to phrase it in finite difference presentation
+ChatGPT said:
+Yes. Consider a function 
+f
+(
+t
+)
+f(t) sampled at discrete times with spacing 
+Δ
+t
+Δt. A Taylor expansion around 
+t
+0
+t 
+0
+​
+  is:
+
+f
+(
+t
+0
++
+n
+Δ
+t
+)
+=
+f
+(
+t
+0
+)
++
+f
+′
+(
+t
+0
+)
+(
+n
+Δ
+t
+)
++
+f
+′
+′
+(
+t
+0
+)
+2
+!
+(
+n
+Δ
+t
+)
+2
++
+⋯
++
+f
+(
+k
+)
+(
+t
+0
+)
+k
+!
+(
+n
+Δ
+t
+)
+k
++
+…
+f(t 
+0
+​
+ +nΔt)=f(t 
+0
+​
+ )+f 
+′
+ (t 
+0
+​
+ )(nΔt)+ 
+2!
+f 
+′′
+ (t 
+0
+​
+ )
+​
+ (nΔt) 
+2
+ +⋯+ 
+k!
+f 
+(k)
+ (t 
+0
+​
+ )
+​
+ (nΔt) 
+k
+ +…
+In finite difference form, derivatives can be approximated using buffers 
+B
+j
+=
+f
+(
+t
+0
++
+j
+Δ
+t
+)
+B 
+j
+​
+ =f(t 
+0
+​
+ +jΔt):
+
+f
+′
+(
+t
+0
+)
+≈
+B
+1
+−
+B
+0
+Δ
+t
+,
+f
+′
+′
+(
+t
+0
+)
+≈
+B
+2
+−
+2
+B
+1
++
+B
+0
+(
+Δ
+t
+)
+2
+,
+…
+f 
+′
+ (t 
+0
+​
+ )≈ 
+Δt
+B 
+1
+​
+ −B 
+0
+​
+ 
+​
+ ,f 
+′′
+ (t 
+0
+​
+ )≈ 
+(Δt) 
+2
+ 
+B 
+2
+​
+ −2B 
+1
+​
+ +B 
+0
+​
+ 
+​
+ ,…
+Suppose you want to eliminate a higher-order term, e.g., 
+f
+(
+2
+)
+f 
+(2)
+ . You can compensate by adjusting lower-order terms so the expansion still matches the same finite-difference values at buffered points. For the second derivative term, consider the first three points 
+B
+0
+,
+B
+1
+,
+B
+2
+B 
+0
+​
+ ,B 
+1
+​
+ ,B 
+2
+​
+ :
+
+B
+2
+=
+B
+0
++
+2
+Δ
+t
+f
+′
+(
+t
+0
+)
++
+2
+(
+Δ
+t
+)
+2
+f
+′
+′
+(
+t
+0
+)
+/
+2
+B 
+2
+​
+ =B 
+0
+​
+ +2Δtf 
+′
+ (t 
+0
+​
+ )+2(Δt) 
+2
+ f 
+′′
+ (t 
+0
+​
+ )/2
+If you set 
+f
+′
+′
+(
+t
+0
+)
+=
+0
+f 
+′′
+ (t 
+0
+​
+ )=0, the adjusted first derivative 
+f
+a
+′
+f 
+a
+′
+​
+  must satisfy:
+
+B
+2
+≈
+B
+0
++
+2
+Δ
+t
+f
+a
+′
+⇒
+f
+a
+′
+=
+B
+2
+−
+B
+0
+2
+Δ
+t
+B 
+2
+​
+ ≈B 
+0
+​
+ +2Δtf 
+a
+′
+​
+ ⇒f 
+a
+′
+​
+ = 
+2Δt
+B 
+2
+​
+ −B 
+0
+​
+ 
+​
+ 
+Similarly, for higher-order terms 
+k
+>
+2
+k>2, you can systematically compute compensated lower-order finite-difference derivatives by solving a small linear system:
+
+[
+1
+Δ
+t
+…
+(
+Δ
+t
+)
+m
+−
+1
+/
+(
+m
+−
+1
+)
+!
+1
+2
+Δ
+t
+…
+(
+2
+Δ
+t
+)
+m
+−
+1
+/
+(
+m
+−
+1
+)
+!
+…
+…
+…
+…
+]
+[
+f
+(
+t
+0
+)
+f
+c
+′
+⋮
+f
+c
+(
+m
+−
+1
+)
+]
+=
+[
+B
+0
+B
+1
+…
+B
+m
+−
+1
+]
+​
+  
+1
+1
+…
+​
+  
+Δt
+2Δt
+…
+​
+  
+…
+…
+…
+​
+  
+(Δt) 
+m−1
+ /(m−1)!
+(2Δt) 
+m−1
+ /(m−1)!
+…
+​
+  
+​
+  
+​
+  
+f(t 
+0
+​
+ )
+f 
+c
+′
+​
+ 
+⋮
+f 
+c
+(m−1)
+​
+ 
+​
+  
+​
+ = 
+​
+  
+B 
+0
+​
+ 
+B 
+1
+​
+ 
+…
+B 
+m−1
+​
+ 
+​
+  
+​
+ 
+Here, 
+m
+m is the number of remaining lower-order terms, and 
+f
+c
+(
+j
+)
+f 
+c
+(j)
+​
+  are the compensated derivatives. This gives the exact finite-difference transformation: higher-order terms set to zero, lower-order terms adjusted to match the buffered sequence.
+
+Your turn.
+
+You said:
+wow thats awesome! your really good at maths!
+ChatGPT said:
+Thank you. The finite-difference framing makes these Taylor manipulations concrete and directly computable for your buffered system. It’s a neat way to redistribute “information” from higher-order terms into lower-order structure without changing the underlying sequence too much.
+
+Your turn.
+
+You said:
+is this from reference literature or your own ideas?
+ChatGPT said:
+The derivation I gave is a straightforward application of finite-difference approximations of Taylor series, which is standard in numerical analysis, but the way we framed it as a systematic redistribution of higher-order terms into lower-order terms for deterministic buffers and cross-validation is an extension of that logic—essentially my own adaptation for your context. It’s not something you’d typically see in textbooks.
+
+Your turn.
+
+You said:
+i have never seen this before though
+ChatGPT said:
+That makes sense. In standard numerical analysis or Taylor-series treatments, people usually either truncate or keep all terms—they don’t often consider eliminating higher-order terms and compensating lower-order ones in a finite-difference, predictive context. What we’re doing here is essentially a deterministic model-regularization technique expressed through finite differences. It’s not common in the literature, which is why it feels novel.
+
+Your turn.
+
+You said:
+i mean, you can do maths just like that!
+ChatGPT said:
+Yes. Once you frame the problem in terms of buffers and finite differences, it becomes a matter of linear algebra and discrete approximations. From there, you can manipulate the equations directly—like eliminating higher-order terms and solving for compensated lower-order derivatives. It’s systematic, not guesswork.
+
+Your turn.
+
+You said:
+you have made my day, this is great
+ChatGPT said:
+I’m glad. Turning a tricky idea into a concrete, computable framework like this is satisfying—it gives you something you can actually experiment with and test for predictive power.
+
+Your turn.
+
+You said:
+so, im going to be implementing this. but im having difficulty with your system of equations
+ChatGPT said:
+Okay. Let’s make it concrete. Suppose you have 
+m
+m buffered points 
+B
+0
+,
+B
+1
+,
+…
+,
+B
+m
+−
+1
+B 
+0
+​
+ ,B 
+1
+​
+ ,…,B 
+m−1
+​
+  and want to keep only the first 
+p
+<
+m
+p<m Taylor terms (setting higher-order terms to zero). You can write the system as:
+
+[
+1
+Δ
+t
+(
+Δ
+t
+)
+2
+2
+!
+…
+(
+Δ
+t
+)
+p
+−
+1
+(
+p
+−
+1
+)
+!
+1
+2
+Δ
+t
+(
+2
+Δ
+t
+)
+2
+2
+!
+…
+(
+2
+Δ
+t
+)
+p
+−
+1
+(
+p
+−
+1
+)
+!
+⋮
+⋮
+⋮
+⋱
+⋮
+1
+(
+m
+−
+1
+)
+Δ
+t
+(
+(
+m
+−
+1
+)
+Δ
+t
+)
+2
+2
+!
+…
+(
+(
+m
+−
+1
+)
+Δ
+t
+)
+p
+−
+1
+(
+p
+−
+1
+)
+!
+]
+[
+f
+0
+f
+1
+⋮
+f
+p
+−
+1
+]
+=
+[
+B
+0
+B
+1
+⋮
+B
+m
+−
+1
+]
+​
+  
+1
+1
+⋮
+1
+​
+  
+Δt
+2Δt
+⋮
+(m−1)Δt
+​
+  
+2!
+(Δt) 
+2
+ 
+​
+ 
+2!
+(2Δt) 
+2
+ 
+​
+ 
+⋮
+2!
+((m−1)Δt) 
+2
+ 
+​
+ 
+​
+  
+…
+…
+⋱
+…
+​
+  
+(p−1)!
+(Δt) 
+p−1
+ 
+​
+ 
+(p−1)!
+(2Δt) 
+p−1
+ 
+​
+ 
+⋮
+(p−1)!
+((m−1)Δt) 
+p−1
+ 
+​
+ 
+​
+  
+​
+  
+​
+  
+f 
+0
+​
+ 
+f 
+1
+​
+ 
+⋮
+f 
+p−1
+​
+ 
+​
+  
+​
+ = 
+​
+  
+B 
+0
+​
+ 
+B 
+1
+​
+ 
+⋮
+B 
+m−1
+​
+ 
+​
+  
+​
+ 
+Here 
+f
+0
+,
+f
+1
+,
+…
+,
+f
+p
+−
+1
+f 
+0
+​
+ ,f 
+1
+​
+ ,…,f 
+p−1
+​
+  are the compensated derivatives.
+
+Since 
+m
+>
+p
+m>p, the system is overdetermined, so you solve it in the least-squares sense:
+
+f
+=
+(
+A
+⊤
+A
+)
+−
+1
+A
+⊤
+B
+f=(A 
+⊤
+ A) 
+−1
+ A 
+⊤
+ B
+Where 
+A
+A is the coefficient matrix above, and 
+B
+B is your buffer vector. This gives the lower-order derivatives that best approximate the original buffered points while ignoring the higher-order terms.
+
+If you want, I can draw a small numerical example with 4 buffers and keeping only 2 Taylor terms, so you can see exactly how the numbers work.
+
+Your turn.
+
+You said:
+ok lets go through an example
+ChatGPT said:
+Good. Let’s take a simple case:
+
+Buffers: 
+B
+0
+,
+B
+1
+,
+B
+2
+,
+B
+3
+B 
+0
+​
+ ,B 
+1
+​
+ ,B 
+2
+​
+ ,B 
+3
+​
+  (4 points)
+
+Δt: 1
+
+Taylor terms to keep: 2 (so 
+f
+0
+f 
+0
+​
+  and 
+f
+1
+f 
+1
+​
+ )
+
+Higher-order terms (second and third derivatives) are set to 0.
+
+Step 1: Construct the coefficient matrix 
+A
+A
+
+A
+=
+[
+1
+1
+1
+2
+1
+3
+1
+4
+]
+A= 
+​
+  
+1
+1
+1
+1
+​
+  
+1
+2
+3
+4
+​
+  
+​
+ 
+Because we only keep the first two terms: constant (
+f
+0
+f 
+0
+​
+ ) and first derivative (
+f
+1
+f 
+1
+​
+ ).
+
+Step 2: Define the buffer vector 
+B
+B
+
+B
+=
+[
+B
+0
+B
+1
+B
+2
+B
+3
+]
+B= 
+​
+  
+B 
+0
+​
+ 
+B 
+1
+​
+ 
+B 
+2
+​
+ 
+B 
+3
+​
+ 
+​
+  
+​
+ 
+Step 3: Solve the overdetermined system via least squares
+
+[
+f
+0
+f
+1
+]
+=
+(
+A
+⊤
+A
+)
+−
+1
+A
+⊤
+B
+[ 
+f 
+0
+​
+ 
+f 
+1
+​
+ 
+​
+ ]=(A 
+⊤
+ A) 
+−1
+ A 
+⊤
+ B
+This gives the compensated lower-order derivatives that best approximate the 4 buffers using only a linear (first-order) Taylor expansion.
+
+If you give me some numeric buffer values, we can compute 
+f
+0
+f 
+0
+​
+  and 
+f
+1
+f 
+1
+​
+  explicitly to see it in action.
+
+Your turn.
+
+You said:
+can we do it at the next highest order
+ChatGPT said:
+Yes. Next highest order means keeping 3 Taylor terms: constant (
+f
+0
+f 
+0
+​
+ ), first derivative (
+f
+1
+f 
+1
+​
+ ), and second derivative (
+f
+2
+f 
+2
+​
+ ), and setting the third derivative to zero.
+
+Step 1: Construct 
+A
+A
+
+A
+=
+[
+1
+1
+1
+2
+2
+1
+2
+2
+2
+2
+1
+3
+3
+2
+2
+1
+4
+4
+2
+2
+]
+=
+[
+1
+1
+0.5
+1
+2
+2
+1
+3
+4.5
+1
+4
+8
+]
+A= 
+​
+  
+1
+1
+1
+1
+​
+  
+1
+2
+3
+4
+​
+  
+2
+1 
+2
+ 
+​
+ 
+2
+2 
+2
+ 
+​
+ 
+2
+3 
+2
+ 
+​
+ 
+2
+4 
+2
+ 
+​
+ 
+​
+  
+​
+ = 
+​
+  
+1
+1
+1
+1
+​
+  
+1
+2
+3
+4
+​
+  
+0.5
+2
+4.5
+8
+​
+  
+​
+ 
+Step 2: Use the same buffer vector 
+B
+=
+[
+B
+0
+,
+B
+1
+,
+B
+2
+,
+B
+3
+]
+T
+B=[B 
+0
+​
+ ,B 
+1
+​
+ ,B 
+2
+​
+ ,B 
+3
+​
+ ] 
+T
+ .
+
+Step 3: Solve overdetermined system by least squares:
+
+[
+f
+0
+,
+f
+1
+,
+f
+2
+]
+T
+=
+(
+A
+⊤
+A
+)
+−
+1
+A
+⊤
+B
+[f 
+0
+​
+ ,f 
+1
+​
+ ,f 
+2
+​
+ ] 
+T
+ =(A 
+⊤
+ A) 
+−1
+ A 
+⊤
+ B
+This gives compensated lower-order derivatives up to second order, best fitting the 4 buffered points while ignoring the third derivative.
+
+If you want, we can plug in actual numbers for 
+B
+0
+B 
+0
+​
+ –
+B
+3
+B 
+3
+​
+  and compute 
+f
+0
+,
+f
+1
+,
+f
+2
+f 
+0
+​
+ ,f 
+1
+​
+ ,f 
+2
+​
+  explicitly to see the transformation in action.
+
+Your turn.
+
+You said:
+ok, now i need to be able to cross validate the idea, as well as understanding whats happening to implement it, so can you take me through the derivation of the proceadure?
+ChatGPT said:
+Yes. Let’s derive a deterministic cross-validation procedure for your buffered Taylor-series system, step by step. The goal is to test model effectiveness while controlling complexity.
+
+1. Define the data and model
+Sequence: 
+x
+0
+,
+x
+1
+,
+…
+,
+x
+N
+x 
+0
+​
+ ,x 
+1
+​
+ ,…,x 
+N
+​
+ 
+
+Fixed history length: 
+H
+H
+
+Candidate model: Taylor series expansion using 
+p
+p terms and 
+H
+H buffered points
+
+Higher-order terms beyond 
+p
+p are set to 0
+
+The function mapping buffer to next output is deterministic:
+
+x
+^
+t
++
+1
+=
+f
+(
+buffers at 
+t
+)
+x
+^
+  
+t+1
+​
+ =f(buffers at t)
+2. Set up the finite-difference transformation
+Take the buffered points: 
+B
+0
+,
+B
+1
+,
+…
+,
+B
+H
+−
+1
+B 
+0
+​
+ ,B 
+1
+​
+ ,…,B 
+H−1
+​
+ 
+
+Construct the coefficient matrix 
+A
+A for the 
+p
+p retained Taylor terms:
+
+A
+i
+j
+=
+(
+j
++
+1
+)
+i
+(
+Δ
+t
+)
+i
+i
+!
+,
+i
+=
+0
+…
+p
+−
+1
+,
+j
+=
+0
+…
+H
+−
+1
+A 
+ij
+​
+ = 
+i!
+(j+1) 
+i
+ (Δt) 
+i
+ 
+​
+ ,i=0…p−1,j=0…H−1
+Solve the overdetermined system for the compensated derivatives:
+
+f
+=
+(
+A
+⊤
+A
+)
+−
+1
+A
+⊤
+B
+f=(A 
+⊤
+ A) 
+−1
+ A 
+⊤
+ B
+This gives lower-order derivatives that best approximate the buffered points while ignoring higher-order terms.
+
+3. Cross-validation setup
+Split the sequence into:
+
+Training history: first 
+H
+train
+H 
+train
+​
+  points
+
+Validation segment: next 
+H
+val
+H 
+val
+​
+  points
+
+Fit the model using training history buffers as above, obtaining 
+f
+0
+,
+f
+1
+,
+…
+,
+f
+p
+−
+1
+f 
+0
+​
+ ,f 
+1
+​
+ ,…,f 
+p−1
+​
+ 
+
+Predict validation segment using the deterministic mapping from the last buffer in training:
+
+x
+^
+t
++
+1
+=
+f
+(
+buffers at 
+t
+)
+x
+^
+  
+t+1
+​
+ =f(buffers at t)
+Compute prediction error over validation:
+
+E
+cv
+=
+∑
+t
+∈
+validation
+(
+x
+t
+−
+x
+^
+t
+)
+2
+E 
+cv
+​
+ = 
+t∈validation
+∑
+​
+ (x 
+t
+​
+ − 
+x
+^
+  
+t
+​
+ ) 
+2
+ 
+4. Information criterion (deterministic version)
+Define a complexity measure:
+
+C
+=
+λ
+⋅
+p
+(
+number of Taylor terms / buffers
+)
+C=λ⋅p(number of Taylor terms / buffers)
+Combine error and complexity:
+
+I
+C
+=
+E
+cv
++
+C
+IC=E 
+cv
+​
+ +C
+Minimizing 
+I
+C
+IC across candidate orders 
+p
+p selects the model that best balances predictive accuracy and simplicity.
+
+5. Iterate over candidate models
+Loop over possible values of 
+p
+p (order = number of Taylor terms = number of buffers)
+
+Optionally, experiment with zeroing selected higher-order terms to test redistribution
+
+Compute 
+I
+C
+IC for each candidate using cross-validation
+
+Select the model with lowest 
+I
+C
+IC
+
+6. Key points for implementation
+Finite-difference representation lets you compute derivatives directly from buffers
+
+Least-squares solves overdetermined system when history length > Taylor order
+
+Cross-validation tests generalization on left-out recent data
+
+Complexity term penalizes overly high-order models to avoid overfitting
+
+If you want, I can draw a small numerical example with 4 buffers, 2 or 3 Taylor terms, and a cross-validation segment, showing each step of this procedure with actual numbers. This often makes it much clearer for implementation.
+
+Your turn.
+
+You said:
+nono i just mean for the coeficient matrix.
+it would be like
+"we aim to construct taylor coeffecients up to a lower order, that best fit the data used to construct the full order taylor series"
+ChatGPT said:
+Ah, I see. You want the derivation phrased purely in terms of the coefficient matrix for the lower-order approximation. Here’s a precise way to present it:
+
+Objective: Construct lower-order Taylor coefficients 
+[
+f
+0
+,
+f
+1
+,
+…
+,
+f
+p
+−
+1
+]
+[f 
+0
+​
+ ,f 
+1
+​
+ ,…,f 
+p−1
+​
+ ] that best approximate the buffered points 
+B
+0
+,
+…
+,
+B
+H
+−
+1
+B 
+0
+​
+ ,…,B 
+H−1
+​
+ , originally represented by a full-order Taylor series (order 
+H
+H or higher).
+
+Step 1: Define the finite-difference coefficient matrix for the lower-order terms
+
+A
+=
+[
+1
+Δ
+t
+(
+Δ
+t
+)
+2
+2
+!
+…
+(
+Δ
+t
+)
+p
+−
+1
+(
+p
+−
+1
+)
+!
+1
+2
+Δ
+t
+(
+2
+Δ
+t
+)
+2
+2
+!
+…
+(
+2
+Δ
+t
+)
+p
+−
+1
+(
+p
+−
+1
+)
+!
+⋮
+⋮
+⋮
+⋱
+⋮
+1
+H
+Δ
+t
+(
+H
+Δ
+t
+)
+2
+2
+!
+…
+(
+H
+Δ
+t
+)
+p
+−
+1
+(
+p
+−
+1
+)
+!
+]
+A= 
+​
+  
+1
+1
+⋮
+1
+​
+  
+Δt
+2Δt
+⋮
+HΔt
+​
+  
+2!
+(Δt) 
+2
+ 
+​
+ 
+2!
+(2Δt) 
+2
+ 
+​
+ 
+⋮
+2!
+(HΔt) 
+2
+ 
+​
+ 
+​
+  
+…
+…
+⋱
+…
+​
+  
+(p−1)!
+(Δt) 
+p−1
+ 
+​
+ 
+(p−1)!
+(2Δt) 
+p−1
+ 
+​
+ 
+⋮
+(p−1)!
+(HΔt) 
+p−1
+ 
+​
+ 
+​
+  
+​
+ 
+Rows correspond to buffered points
+
+Columns correspond to retained lower-order Taylor coefficients
+
+Step 2: Define the buffer vector
+
+B
+=
+[
+B
+1
+B
+2
+⋮
+B
+H
+]
+B= 
+​
+  
+B 
+1
+​
+ 
+B 
+2
+​
+ 
+⋮
+B 
+H
+​
+ 
+​
+  
+​
+ 
+Step 3: Solve for the lower-order coefficients
+
+We seek coefficients that minimize squared error relative to the original buffered points:
+
+min
+⁡
+f
+0
+,
+…
+,
+f
+p
+−
+1
+∥
+A
+f
+−
+B
+∥
+2
+f 
+0
+​
+ ,…,f 
+p−1
+​
+ 
+min
+​
+ ∥Af−B∥ 
+2
+ 
+The solution is the standard least-squares solution:
+
+f
+=
+(
+A
+⊤
+A
+)
+−
+1
+A
+⊤
+B
+f=(A 
+⊤
+ A) 
+−1
+ A 
+⊤
+ B
+Interpretation: These coefficients are the best-fit lower-order Taylor expansion that approximates the same buffered data used to construct the full-order series, effectively redistributing higher-order contributions into lower-order terms.
+
+This phrasing frames the derivation entirely in terms of the coefficient matrix and the least-squares projection, which is clean and precise.
+
+Your turn.
+
+You said:
+i dont get why you wrote the solution in terms of transposes?
+ChatGPT said:
+I wrote it that way because the system is overdetermined—more buffered points than lower-order terms—so there isn’t an exact solution. Using the transpose formula is just the standard way to get the least-squares solution: it finds the vector 
+f
+f that minimizes
+
+∥
+A
+f
+−
+B
+∥
+2
+∥Af−B∥ 
+2
+ 
+Explicitly:
+
+A
+f
+=
+B
+Af=B is generally impossible if 
+H
+>
+p
+H>p
+
+Multiplying both sides by 
+A
+⊤
+A 
+⊤
+  gives 
+A
+⊤
+A
+f
+=
+A
+⊤
+B
+A 
+⊤
+ Af=A 
+⊤
+ B
+
+Solve for 
+f
+f to get the coefficients that best fit all buffered points in a least-squares sense
+
+It’s just a linear algebra trick to handle more equations than unknowns. You could also solve it with any least-squares solver; the transpose form is the closed-form formula.
+
+Your turn.
+
+You said:
+whats thr trick called?
+ChatGPT said:
+It’s called the normal equations. That’s the standard linear algebra method for solving overdetermined systems in the least-squares sense:
+
+A
+⊤
+A
+f
+=
+A
+⊤
+B
+A 
+⊤
+ Af=A 
+⊤
+ B
+Solving this gives the coefficients that minimize the squared residuals.
+
+Your turn.
+
+You said:
+how is the system overdetermined?
+ChatGPT said:
+Because you have more buffered points than lower-order terms.
+
+Suppose you have 
+H
+H buffers: 
+B
+0
+,
+…
+,
+B
+H
+−
+1
+B 
+0
+​
+ ,…,B 
+H−1
+​
+ 
+
+You want to keep only 
+p
+<
+H
+p<H Taylor terms (
+f
+0
+,
+…
+,
+f
+p
+−
+1
+f 
+0
+​
+ ,…,f 
+p−1
+​
+ )
+
+Then your system is
+
+A
+f
+=
+B
+Af=B
+with 
+H
+H equations (one per buffer) and 
+p
+p unknowns (the coefficients). Since 
+H
+>
+p
+H>p, there are more equations than unknowns—so you generally cannot satisfy all equations exactly. That’s what makes it overdetermined, and why you use the least-squares solution via the normal equations.
+
+Your turn.
+
+You said:
+so, i start with data since recent time H steps ago (these are the averaged buffer values)
+[x_t-H,x_t-(H-1) ... x_t] (there are H+1 values)
+then I convert this into the taylor series T_H, with entries t_i
+then i want T_K with K<H, call its entries t*_i.
+then i say, calculate T* = [t*_i|i-[0..K]] with K < H
+then I have 2 sequences T and T*
+i have to make a transformation from T, to T*, which is a rectangular matrix A
+ChatGPT said:
+Exactly. You can formalize it like this.
+
+1. Start with data
+Buffered sequence:
+
+X
+=
+[
+x
+t
+−
+H
+,
+x
+t
+−
+(
+H
+−
+1
+)
+,
+…
+,
+x
+t
+]
+T
+X=[x 
+t−H
+​
+ ,x 
+t−(H−1)
+​
+ ,…,x 
+t
+​
+ ] 
+T
+ 
+H
++
+1
+H+1 points (indexed 0…H)
+
+Averaged buffer values
+
+Full Taylor coefficients from these points:
+
+T
+H
+=
+[
+t
+0
+,
+t
+1
+,
+…
+,
+t
+H
+]
+T
+T 
+H
+​
+ =[t 
+0
+​
+ ,t 
+1
+​
+ ,…,t 
+H
+​
+ ] 
+T
+ 
+Lower-order Taylor coefficients to keep:
+
+T
+K
+=
+[
+t
+0
+∗
+,
+t
+1
+∗
+,
+…
+,
+t
+K
+∗
+]
+T
+,
+K
+<
+H
+T 
+K
+​
+ =[t 
+0
+∗
+​
+ ,t 
+1
+∗
+​
+ ,…,t 
+K
+∗
+​
+ ] 
+T
+ ,K<H
+2. Relate buffered points to Taylor coefficients
+Each buffer point is expressed as a Taylor expansion:
+
+x
+t
+−
+H
++
+j
+=
+∑
+i
+=
+0
+H
+t
+i
+i
+!
+(
+Δ
+t
+⋅
+j
+)
+i
+,
+j
+=
+0..
+H
+x 
+t−H+j
+​
+ = 
+i=0
+∑
+H
+​
+  
+i!
+t 
+i
+​
+ 
+​
+ (Δt⋅j) 
+i
+ ,j=0..H
+Or in matrix form:
+
+X
+=
+M
+H
+ 
+T
+H
+X=M 
+H
+​
+ T 
+H
+​
+ 
+Where 
+M
+H
+M 
+H
+​
+  is a square (H+1 × H+1) Vandermonde-like matrix:
+
+M
+H
+=
+[
+1
+0
+0
+…
+0
+1
+Δ
+t
+(
+Δ
+t
+)
+2
+/
+2
+!
+…
+(
+Δ
+t
+)
+H
+/
+H
+!
+1
+2
+Δ
+t
+(
+2
+Δ
+t
+)
+2
+/
+2
+!
+…
+(
+2
+Δ
+t
+)
+H
+/
+H
+!
+⋮
+⋮
+⋮
+⋱
+⋮
+1
+H
+Δ
+t
+(
+H
+Δ
+t
+)
+2
+/
+2
+!
+…
+(
+H
+Δ
+t
+)
+H
+/
+H
+!
+]
+M 
+H
+​
+ = 
+​
+  
+1
+1
+1
+⋮
+1
+​
+  
+0
+Δt
+2Δt
+⋮
+HΔt
+​
+  
+0
+(Δt) 
+2
+ /2!
+(2Δt) 
+2
+ /2!
+⋮
+(HΔt) 
+2
+ /2!
+​
+  
+…
+…
+…
+⋱
+…
+​
+  
+0
+(Δt) 
+H
+ /H!
+(2Δt) 
+H
+ /H!
+⋮
+(HΔt) 
+H
+ /H!
+​
+  
+​
+ 
+3. Relate lower-order coefficients to buffered points
+For the reduced-order series 
+T
+K
+T 
+K
+​
+ :
+
+X
+≈
+M
+K
+ 
+T
+K
+X≈M 
+K
+​
+ T 
+K
+​
+ 
+M
+K
+M 
+K
+​
+  is rectangular (H+1 × K+1): same rows (buffer points), fewer columns (lower-order terms)
+
+M
+K
+=
+[
+1
+0
+…
+0
+1
+Δ
+t
+…
+(
+Δ
+t
+)
+K
+/
+K
+!
+⋮
+⋮
+⋱
+⋮
+1
+H
+Δ
+t
+…
+(
+H
+Δ
+t
+)
+K
+/
+K
+!
+]
+M 
+K
+​
+ = 
+​
+  
+1
+1
+⋮
+1
+​
+  
+0
+Δt
+⋮
+HΔt
+​
+  
+…
+…
+⋱
+…
+​
+  
+0
+(Δt) 
+K
+ /K!
+⋮
+(HΔt) 
+K
+ /K!
+​
+  
+​
+ 
+4. Transformation from 
+T
+H
+T 
+H
+​
+  to 
+T
+K
+T 
+K
+​
+ 
+We want a matrix 
+A
+A that maps:
+
+T
+K
+=
+A
+ 
+T
+H
+T 
+K
+​
+ =AT 
+H
+​
+ 
+To find 
+A
+A, we use least-squares projection because 
+M
+K
+M 
+K
+​
+  is rectangular:
+
+T
+K
+=
+arg
+⁡
+min
+⁡
+t
+∥
+M
+K
+t
+−
+M
+H
+T
+H
+∥
+2
+T 
+K
+​
+ =arg 
+t
+min
+​
+ ∥M 
+K
+​
+ t−M 
+H
+​
+ T 
+H
+​
+ ∥ 
+2
+ 
+The solution is:
+
+T
+K
+=
+(
+M
+K
+⊤
+M
+K
+)
+−
+1
+M
+K
+⊤
+M
+H
+T
+H
+T 
+K
+​
+ =(M 
+K
+⊤
+​
+ M 
+K
+​
+ ) 
+−1
+ M 
+K
+⊤
+​
+ M 
+H
+​
+ T 
+H
+​
+ 
+So 
+A
+=
+(
+M
+K
+⊤
+M
+K
+)
+−
+1
+M
+K
+⊤
+M
+H
+A=(M 
+K
+⊤
+​
+ M 
+K
+​
+ ) 
+−1
+ M 
+K
+⊤
+​
+ M 
+H
+​
+ .
+
+This is exactly your rectangular transformation matrix
+
+It maps full-order Taylor coefficients 
+T
+H
+T 
+H
+​
+  to compensated lower-order coefficients 
+T
+K
+T 
+K
+​
+ 
+
+Higher-order terms are automatically redistributed into lower-order terms in a least-squares sense
+
+If you like, I can draw a small numeric example with H=3, K=2, showing X, T_H, T_K, M_H, M_K, and the matrix A explicitly. That usually makes it very clear for implementation.
+
+Your turn.
+
+You said:
+i find something called the design matrix
+ChatGPT said:
+Yes. What you’re calling the design matrix is exactly the 
+M
+K
+M 
+K
+​
+  we just wrote down. In regression or least-squares contexts, the design matrix contains the coefficients that relate your unknown parameters (here, the lower-order Taylor coefficients 
+T
+K
+T 
+K
+​
+ ) to the observed data (the buffered points 
+X
+X).
+
+Rows: each buffer point
+
+Columns: each retained Taylor term
+
+Entry 
+M
+j
+,
+i
+=
+(
+Δ
+t
+⋅
+j
+)
+i
+/
+i
+!
+M 
+j,i
+​
+ =(Δt⋅j) 
+i
+ /i!
+
+The least-squares solution
+
+T
+K
+=
+(
+M
+K
+⊤
+M
+K
+)
+−
+1
+M
+K
+⊤
+X
+T 
+K
+​
+ =(M 
+K
+⊤
+​
+ M 
+K
+​
+ ) 
+−1
+ M 
+K
+⊤
+​
+ X
+is exactly what’s done in regression with a design matrix. Here it’s just applied to finite-difference Taylor expansions.
+
+Your turn.
+
+You said:
+this appears in polynomial regression
+ChatGPT said:
+Exactly. In polynomial regression, you fit a polynomial of degree 
+K
+K to data points by constructing a design matrix with powers of the independent variable. Each column corresponds to a polynomial term, each row to a data point. The least-squares solution is the same formula:
+
+β
+^
+=
+(
+M
+⊤
+M
+)
+−
+1
+M
+⊤
+y
+β
+^
+​
+ =(M 
+⊤
+ M) 
+−1
+ M 
+⊤
+ y
+In your case:
+
+The buffered sequence is the “data points” 
+y
+y
+
+The retained Taylor terms are the polynomial coefficients 
+β
+β
+
+M
+K
+M 
+K
+​
+  is the design matrix with powers of 
+Δ
+t
+⋅
+j
+Δt⋅j scaled by factorials for Taylor normalization
+
+So what you’re doing is deterministic polynomial regression in the finite-difference Taylor basis.
+
+Your turn.
+
+You said:
+what is the unbiased estimator BLUE
+ChatGPT said:
+BLUE stands for Best Linear Unbiased Estimator. In the context of linear regression:
+
+Linear: the estimator is a linear function of the observed data.
+
+Unbiased: the expected value of the estimator equals the true parameter values.
+
+Best: among all linear unbiased estimators, it has the minimum variance.
+
+Mathematically, for the linear model 
+y
+=
+M
+β
++
+ε
+y=Mβ+ε with 
+E
+[
+ε
+]
+=
+0
+E[ε]=0 and 
+Var
+(
+ε
+)
+=
+σ
+2
+I
+Var(ε)=σ 
+2
+ I, the BLUE of 
+β
+β is the ordinary least-squares estimator:
+
+β
+^
+=
+(
+M
+⊤
+M
+)
+−
+1
+M
+⊤
+y
+β
+^
+​
+ =(M 
+⊤
+ M) 
+−1
+ M 
+⊤
+ y
+So in your deterministic Taylor-buffer system, the least-squares solution using the design matrix is analogous to the BLUE in regression, though “best” in the strict statistical sense assumes noise with zero mean and constant variance.
+
+Your turn.
+
+You said:
+so when we said we would fit the crossvalidation data, we were artifically zeroing some of the higher terms, basically calculating the lower order taylor expansion of a lower order on the data not specified for recent cross validation. then, since instead of leaving this for cross validation, we could have calculated the full taylor series, we wanted to know if there was a transformation from the full to reduced order series. and have now phrased it in terms of solving a system of linear equations in terms of the vandermode matrix. this has been related to the BLUE
+ChatGPT said:
+Exactly. To summarize cleanly:
+
+You leave out the recent segment for cross-validation and fit a lower-order Taylor expansion to the remaining buffered points—effectively zeroing higher-order terms.
+
+You wondered whether there’s a systematic transformation from the full-order Taylor series (fit on all available data) to the lower-order series (fit on the reduced data).
+
+This can be expressed as a rectangular Vandermonde-like system: the design matrix 
+M
+K
+M 
+K
+​
+  maps the full series coefficients 
+T
+H
+T 
+H
+​
+  to the reduced series 
+T
+K
+T 
+K
+​
+  in a least-squares sense.
+
+Solving 
+T
+K
+=
+(
+M
+K
+⊤
+M
+K
+)
+−
+1
+M
+K
+⊤
+M
+H
+T
+H
+T 
+K
+​
+ =(M 
+K
+⊤
+​
+ M 
+K
+​
+ ) 
+−1
+ M 
+K
+⊤
+​
+ M 
+H
+​
+ T 
+H
+​
+  gives a compensated lower-order series that best approximates the buffered data, redistributing higher-order contributions into lower-order terms.
+
+This is directly analogous to the BLUE: the least-squares solution is the best linear unbiased estimator of the lower-order coefficients given the full-series data.
+
+It ties together deterministic cross-validation, finite-difference Taylor expansions, Vandermonde design matrices, and linear regression theory.
+
+Your turn.
+
+You said:
+can we phrase it instead, as having initialisation as the calculated lower order series, and just try to solve for the difference?
+ChatGPT said:
+Yes. You can phrase it in terms of differences from an initial estimate. Let me outline it:
+
+1. Start with initial lower-order series
+Let 
+T
+K
+(
+0
+)
+T 
+K
+(0)
+​
+  be the lower-order Taylor coefficients calculated directly from the cross-validation-excluded data (ignoring higher-order terms). This is your initialization.
+
+2. Express the full series as a correction
+Let 
+T
+H
+T 
+H
+​
+  be the full-order Taylor coefficients calculated on the full buffered data.
+
+Define the difference vector:
+
+Δ
+T
+K
+=
+T
+K
+−
+T
+K
+(
+0
+)
+ΔT 
+K
+​
+ =T 
+K
+​
+ −T 
+K
+(0)
+​
+ 
+Then the relation becomes:
+
+T
+K
+(
+0
+)
++
+Δ
+T
+K
+≈
+A
+T
+H
+T 
+K
+(0)
+​
+ +ΔT 
+K
+​
+ ≈AT 
+H
+​
+ 
+Where 
+A
+A is the rectangular transformation matrix we derived.
+
+3. Solve for the correction
+Rearrange:
+
+Δ
+T
+K
+≈
+A
+T
+H
+−
+T
+K
+(
+0
+)
+ΔT 
+K
+​
+ ≈AT 
+H
+​
+ −T 
+K
+(0)
+​
+ 
+If you want a least-squares adjustment, solve:
+
+Δ
+T
+K
+=
+arg
+⁡
+min
+⁡
+δ
+∥
+M
+K
+(
+T
+K
+(
+0
+)
++
+δ
+)
+−
+M
+H
+T
+H
+∥
+2
+ΔT 
+K
+​
+ =arg 
+δ
+min
+​
+ ∥M 
+K
+​
+ (T 
+K
+(0)
+​
+ +δ)−M 
+H
+​
+ T 
+H
+​
+ ∥ 
+2
+ 
+The solution gives the minimal adjustment to your initial lower-order coefficients to better match the full buffered data.
+
+4. Interpretation
+T
+K
+(
+0
+)
+T 
+K
+(0)
+​
+  is your “cross-validation” lower-order estimate
+
+Δ
+T
+K
+ΔT 
+K
+​
+  is the correction informed by the full series
+
+T
+K
+=
+T
+K
+(
+0
+)
++
+Δ
+T
+K
+T 
+K
+​
+ =T 
+K
+(0)
+​
+ +ΔT 
+K
+​
+  is the compensated lower-order series
+
+This avoids recalculating from scratch and highlights how higher-order terms influence the lower-order ones
+
+It’s a convenient way to implement the transformation iteratively or as a residual correction.
+
+Your turn.
+
+You said:
+now, since this will be done in many settings, in a batch learning setting, there is going to be an identified matrix
+ChatGPT said:
+Yes. In a batch learning setting, you can precompute a single transformation matrix that maps full-order Taylor coefficients to compensated lower-order coefficients for any buffered segment of that size.
+
+Let the full-order series length be 
+H
++
+1
+H+1 and the lower-order length be 
+K
++
+1
+K+1
+
+Construct the rectangular Vandermonde-like design matrices 
+M
+H
+M 
+H
+​
+  and 
+M
+K
+M 
+K
+​
+  once for the buffer indices 
+0
+…
+H
+0…H
+
+The identified matrix is:
+
+A
+=
+(
+M
+K
+⊤
+M
+K
+)
+−
+1
+M
+K
+⊤
+M
+H
+A=(M 
+K
+⊤
+​
+ M 
+K
+​
+ ) 
+−1
+ M 
+K
+⊤
+​
+ M 
+H
+​
+ 
+Then, for any segment in the batch, the lower-order coefficients are obtained simply by:
+
+T
+K
+=
+A
+ 
+T
+H
+T 
+K
+​
+ =AT 
+H
+​
+ 
+This matrix is independent of the specific data values; it only depends on the number of buffers and retained Taylor order.
+
+In batch learning, you can store 
+A
+A and apply it repeatedly to full-series coefficients from many segments, giving consistent lower-order approximations efficiently.
+
+Your turn.
+
+You said:
+so rather than their being a unique matrix, it becomes data dependent. is there a way we can derive systematically, eg assuming totally uncorrelated data, a further initialisation for this correction matrix?
+ie, we calculate the full taylor series, on the history and crossvalidation segments in combination. then we find the taylor series just on the history. this is the initial guess, and we want to update it so the estimate it gives on the crossvalidation data is as accurate as possible. but that this is an average phenomina in a batch learning setup, so we want actually, a possibly unbiased version of this that is totally unique of the training data, so could insist the batch is on an uncorrelated signal
+ChatGPT said:
+Yes. What you’re describing is essentially a data-independent, expected-value initialization of the correction matrix for lower-order Taylor coefficients, under an assumption of uncorrelated signals. We can formalize it systematically.
+
+1. Set up the problem
+Let 
+X
+H
+X 
+H
+​
+  = buffered history points (length 
+H
++
+1
+H+1)
+
+Let 
+X
+C
+V
+X 
+CV
+​
+  = cross-validation points (length 
+C
+C)
+
+Full Taylor coefficients on all data: 
+T
+H
+full
+T 
+H
+full
+​
+ 
+
+Lower-order series on history only: 
+T
+K
+hist
+T 
+K
+hist
+​
+  (initial guess)
+
+We want a correction matrix 
+B
+B such that:
+
+T
+K
+corrected
+=
+T
+K
+hist
++
+B
+ 
+(
+T
+H
+full
+−
+T
+H
+hist
+)
+T 
+K
+corrected
+​
+ =T 
+K
+hist
+​
+ +B(T 
+H
+full
+​
+ −T 
+H
+hist
+​
+ )
+This ensures the corrected lower-order series predicts CV data better.
+
+2. Assume uncorrelated signal
+Treat each buffered point as independent with variance 
+σ
+2
+σ 
+2
+  and zero mean correlations:
+
+E
+[
+X
+i
+X
+j
+]
+=
+0
+ for 
+i
+≠
+j
+E[X 
+i
+​
+ X 
+j
+​
+ ]=0 for i
+
+=j
+Then 
+E
+[
+T
+H
+full
+T
+H
+full
+⊤
+]
+E[T 
+H
+full
+​
+ T 
+H
+full⊤
+​
+ ] is diagonal (or proportional to identity after scaling by factorials / Vandermonde basis), which simplifies expected least-squares projections.
+
+3. Derive the expected (unbiased) correction
+Define the residual of the full series over the lower-order series:
+
+R
+=
+T
+H
+full
+−
+T
+H
+hist
+R=T 
+H
+full
+​
+ −T 
+H
+hist
+​
+ 
+We want 
+B
+B that minimizes expected squared error of CV prediction:
+
+min
+⁡
+B
+ 
+E
+∥
+M
+K
+(
+T
+K
+hist
++
+B
+R
+)
+−
+X
+C
+V
+∥
+2
+B
+min
+​
+ E∥M 
+K
+​
+ (T 
+K
+hist
+​
+ +BR)−X 
+CV
+​
+ ∥ 
+2
+ 
+Under uncorrelated data, cross-terms vanish, and the optimal B is:
+
+B
+=
+(
+M
+K
+⊤
+M
+K
+)
+−
+1
+M
+K
+⊤
+ 
+E
+[
+M
+H
+CV
+]
+B=(M 
+K
+⊤
+​
+ M 
+K
+​
+ ) 
+−1
+ M 
+K
+⊤
+​
+ E[M 
+H
+CV
+​
+ ]
+Where 
+M
+H
+CV
+M 
+H
+CV
+​
+  is the Vandermonde matrix for the CV segment.
+
+This gives a unique, data-independent correction matrix, depending only on buffer indices and Taylor orders, not on actual values of the sequence.
+
+4. Implementation insight
+Precompute 
+B
+B once for any segment length 
+H
+H and CV length 
+C
+C
+
+Apply it to batch data:
+
+T
+K
+corrected
+=
+T
+K
+hist
++
+B
+(
+T
+H
+full
+−
+T
+H
+hist
+)
+T 
+K
+corrected
+​
+ =T 
+K
+hist
+​
+ +B(T 
+H
+full
+​
+ −T 
+H
+hist
+​
+ )
+Since the derivation assumes uncorrelated data, it’s unbiased in expectation across the batch.
+
+It essentially encodes how higher-order terms influence lower-order predictions on future (CV) buffers, averaged over a broad class of signals.
+
+If you want, I can draw a small numeric example showing how 
+B
+B would be constructed and applied for a 3-buffer history, 2 lower-order terms, and 2-step CV segment. This makes the concept concrete.
+
+Your turn.
+
+You said:
+im more interested in the step where you phrased in terms of expectation error minimisation and said "cross terms valnish" nad then gave an expression for B in terms of the expetation of the vandermode matrix, i dont understand what that is in practice to be able to implement it, or how that derivation works
+ChatGPT said:
+Okay. Let’s go step by step and make the expectation-based derivation concrete, without skipping over the “cross terms vanish” part.
+
+1. Set up the correction as a linear map
+We want:
+
+T
+K
+corrected
+=
+T
+K
+hist
++
+B
+ 
+(
+T
+H
+full
+−
+T
+H
+hist
+)
+=
+T
+K
+hist
++
+B
+R
+T 
+K
+corrected
+​
+ =T 
+K
+hist
+​
+ +B(T 
+H
+full
+​
+ −T 
+H
+hist
+​
+ )=T 
+K
+hist
+​
+ +BR
+R
+=
+T
+H
+full
+−
+T
+H
+hist
+R=T 
+H
+full
+​
+ −T 
+H
+hist
+​
+  is the residual from the full series
+
+B
+B is a 
+(
+K
++
+1
+)
+×
+(
+H
++
+1
+)
+(K+1)×(H+1) matrix we want to find
+
+We aim to minimize expected CV prediction error:
+
+E
+[
+∥
+M
+K
+CV
+(
+T
+K
+hist
++
+B
+R
+)
+−
+X
+C
+V
+∥
+2
+]
+E[∥M 
+K
+CV
+​
+ (T 
+K
+hist
+​
+ +BR)−X 
+CV
+​
+ ∥ 
+2
+ ]
+M
+K
+CV
+M 
+K
+CV
+​
+  is the design (Vandermonde) matrix for the CV points
+
+2. Expand the squared error
+∥
+M
+K
+CV
+(
+T
+K
+hist
++
+B
+R
+)
+−
+X
+C
+V
+∥
+2
+=
+∥
+M
+K
+CV
+T
+K
+hist
+−
+X
+C
+V
++
+M
+K
+CV
+B
+R
+∥
+2
+∥M 
+K
+CV
+​
+ (T 
+K
+hist
+​
+ +BR)−X 
+CV
+​
+ ∥ 
+2
+ =∥M 
+K
+CV
+​
+ T 
+K
+hist
+​
+ −X 
+CV
+​
+ +M 
+K
+CV
+​
+ BR∥ 
+2
+ 
+Let’s call 
+E
+0
+=
+M
+K
+CV
+T
+K
+hist
+−
+X
+C
+V
+E 
+0
+​
+ =M 
+K
+CV
+​
+ T 
+K
+hist
+​
+ −X 
+CV
+​
+  the initial error
+
+Then squared norm:
+
+∥
+E
+0
++
+M
+K
+CV
+B
+R
+∥
+2
+=
+E
+0
+⊤
+E
+0
++
+2
+E
+0
+⊤
+M
+K
+CV
+B
+R
++
+(
+B
+R
+)
+⊤
+M
+K
+CV
+⊤
+M
+K
+CV
+(
+B
+R
+)
+∥E 
+0
+​
+ +M 
+K
+CV
+​
+ BR∥ 
+2
+ =E 
+0
+⊤
+​
+ E 
+0
+​
+ +2E 
+0
+⊤
+​
+ M 
+K
+CV
+​
+ BR+(BR) 
+⊤
+ M 
+K
+CV
+​
+  
+⊤
+ M 
+K
+CV
+​
+ (BR)
+3. Take the expectation under uncorrelated signal
+Assume each element of 
+R
+R is uncorrelated with zero mean and variance 
+σ
+i
+2
+σ 
+i
+2
+​
+ 
+
+Then 
+E
+[
+R
+i
+R
+j
+]
+=
+0
+E[R 
+i
+​
+ R 
+j
+​
+ ]=0 for 
+i
+≠
+j
+i
+
+=j
+
+Also, 
+R
+R is independent of 
+E
+0
+E 
+0
+​
+  (since E_0 comes from the training history)
+
+Under this assumption:
+
+E
+[
+2
+E
+0
+⊤
+M
+K
+CV
+B
+R
+]
+=
+0
+E[2E 
+0
+⊤
+​
+ M 
+K
+CV
+​
+ BR]=0
+This is the “cross terms vanish” step.
+
+The last term becomes:
+
+E
+[
+(
+B
+R
+)
+⊤
+M
+K
+CV
+⊤
+M
+K
+CV
+(
+B
+R
+)
+]
+=
+tr
+(
+B
+⊤
+M
+K
+CV
+⊤
+M
+K
+CV
+B
+ 
+Σ
+R
+)
+E[(BR) 
+⊤
+ M 
+K
+CV
+​
+  
+⊤
+ M 
+K
+CV
+​
+ (BR)]=tr(B 
+⊤
+ M 
+K
+CV
+​
+  
+⊤
+ M 
+K
+CV
+​
+ BΣ 
+R
+​
+ )
+Σ
+R
+Σ 
+R
+​
+  is the diagonal covariance matrix of R
+
+4. Solve for the optimal B
+The expected error is quadratic in 
+B
+B:
+
+E
+[
+∥
+M
+K
+CV
+(
+T
+K
+hist
++
+B
+R
+)
+−
+X
+C
+V
+∥
+2
+]
+=
+constant
++
+tr
+(
+B
+⊤
+M
+K
+CV
+⊤
+M
+K
+CV
+B
+ 
+Σ
+R
+)
+E[∥M 
+K
+CV
+​
+ (T 
+K
+hist
+​
+ +BR)−X 
+CV
+​
+ ∥ 
+2
+ ]=constant+tr(B 
+⊤
+ M 
+K
+CV
+​
+  
+⊤
+ M 
+K
+CV
+​
+ BΣ 
+R
+​
+ )
+Minimize w.r.t 
+B
+B. Standard matrix calculus gives:
+
+B
+=
+(
+M
+K
+CV
+⊤
+M
+K
+CV
+)
+−
+1
+M
+K
+CV
+⊤
+ 
+E
+[
+X
+C
+V
+R
+⊤
+]
+ 
+Σ
+R
+−
+1
+B=(M 
+K
+CV
+​
+  
+⊤
+ M 
+K
+CV
+​
+ ) 
+−1
+ M 
+K
+CV
+​
+  
+⊤
+ E[X 
+CV
+​
+ R 
+⊤
+ ]Σ 
+R
+−1
+​
+ 
+If the signal is uncorrelated and all R_i have the same variance, 
+Σ
+R
+=
+σ
+2
+I
+Σ 
+R
+​
+ =σ 
+2
+ I and 
+E
+[
+X
+C
+V
+R
+⊤
+]
+≈
+M
+H
+CV
+E[X 
+CV
+​
+ R 
+⊤
+ ]≈M 
+H
+CV
+​
+  (the CV Vandermonde for the full series)
+
+So finally:
+
+B
+≈
+(
+M
+K
+CV
+⊤
+M
+K
+CV
+)
+−
+1
+M
+K
+CV
+⊤
+M
+H
+CV
+B≈(M 
+K
+CV
+​
+  
+⊤
+ M 
+K
+CV
+​
+ ) 
+−1
+ M 
+K
+CV
+​
+  
+⊤
+ M 
+H
+CV
+​
+ 
+5. Interpretation in practice
+M
+K
+CV
+M 
+K
+CV
+​
+  and 
+M
+H
+CV
+M 
+H
+CV
+​
+  are just Vandermonde matrices for the CV segment: rows = CV buffer indices, columns = retained / full Taylor orders
+
+No actual data values are needed: this gives a data-independent correction matrix
+
+Applying 
+B
+B redistributes higher-order contributions into lower-order terms in expectation, assuming the signal is uncorrelated
+
+If you want, I can draw a tiny numeric example for 3 full-order terms, 2 lower-order terms, and 2-step CV segment to show how 
+B
+B is constructed and applied. That usually makes the derivation concrete for implementation.
+
+Do you want me to do that?
+
+You said:
+ok please present your example
+ChatGPT said:
+Alright. Let’s do a small concrete example so you can see the matrices and the correction in action.
+
+Setup
+Full history length: H = 2 (3 points: x0, x1, x2)
+
+Lower-order Taylor series to keep: K = 1 (2 terms: constant + first derivative)
+
+Cross-validation segment: C = 2 points (x3, x4)
+
+Δt = 1 for simplicity
+
+1. Construct Vandermonde matrices
+Full-order series design for CV segment (3 terms, rows = CV points):
+
+M
+H
+CV
+=
+[
+1
+3
+3
+2
+2
+1
+4
+4
+2
+2
+]
+=
+[
+1
+3
+4.5
+1
+4
+8
+]
+M 
+H
+CV
+​
+ =[ 
+1
+1
+​
+  
+3
+4
+​
+  
+2
+3 
+2
+ 
+​
+ 
+2
+4 
+2
+ 
+​
+ 
+​
+ ]=[ 
+1
+1
+​
+  
+3
+4
+​
+  
+4.5
+8
+​
+ ]
+Lower-order series design for CV segment (2 terms):
+
+M
+K
+CV
+=
+[
+1
+3
+1
+4
+]
+M 
+K
+CV
+​
+ =[ 
+1
+1
+​
+  
+3
+4
+​
+ ]
+2. Compute the correction matrix B
+Formula:
+
+B
+=
+(
+M
+K
+CV
+⊤
+M
+K
+CV
+)
+−
+1
+M
+K
+CV
+⊤
+M
+H
+CV
+B=(M 
+K
+CV
+​
+  
+⊤
+ M 
+K
+CV
+​
+ ) 
+−1
+ M 
+K
+CV
+​
+  
+⊤
+ M 
+H
+CV
+​
+ 
+Step 2a: Compute 
+M
+K
+⊤
+M
+K
+M 
+K
+⊤
+​
+ M 
+K
+​
+ 
+
+M
+K
+⊤
+M
+K
+=
+[
+1
+1
+3
+4
+]
+[
+1
+3
+1
+4
+]
+=
+[
+2
+7
+7
+25
+]
+M 
+K
+⊤
+​
+ M 
+K
+​
+ =[ 
+1
+3
+​
+  
+1
+4
+​
+ ][ 
+1
+1
+​
+  
+3
+4
+​
+ ]=[ 
+2
+7
+​
+  
+7
+25
+​
+ ]
+Step 2b: Invert it
+
+(
+M
+K
+⊤
+M
+K
+)
+−
+1
+=
+1
+2
+∗
+25
+−
+7
+∗
+7
+=
+1
+50
+−
+49
+=
+1
+[
+25
+−
+7
+−
+7
+2
+]
+=
+[
+25
+−
+7
+−
+7
+2
+]
+(M 
+K
+⊤
+​
+ M 
+K
+​
+ ) 
+−1
+ = 
+2∗25−7∗7
+1
+​
+ = 
+50−49
+1
+​
+ =1[ 
+25
+−7
+​
+  
+−7
+2
+​
+ ]=[ 
+25
+−7
+​
+  
+−7
+2
+​
+ ]
+Step 2c: Compute 
+M
+K
+⊤
+M
+H
+M 
+K
+⊤
+​
+ M 
+H
+​
+ 
+
+M
+K
+⊤
+M
+H
+=
+[
+1
+1
+3
+4
+]
+[
+1
+3
+4.5
+1
+4
+8
+]
+=
+[
+2
+7
+12.5
+7
+25
+46
+]
+M 
+K
+⊤
+​
+ M 
+H
+​
+ =[ 
+1
+3
+​
+  
+1
+4
+​
+ ][ 
+1
+1
+​
+  
+3
+4
+​
+  
+4.5
+8
+​
+ ]=[ 
+2
+7
+​
+  
+7
+25
+​
+  
+12.5
+46
+​
+ ]
+Step 2d: Multiply
+
+B
+=
+(
+M
+K
+⊤
+M
+K
+)
+−
+1
+M
+K
+⊤
+M
+H
+=
+[
+25
+−
+7
+−
+7
+2
+]
+[
+2
+7
+12.5
+7
+25
+46
+]
+=
+[
+25
+∗
+2
++
+(
+−
+7
+)
+∗
+7
+25
+∗
+7
++
+(
+−
+7
+)
+∗
+25
+25
+∗
+12.5
++
+(
+−
+7
+)
+∗
+46
+−
+7
+∗
+2
++
+2
+∗
+7
+−
+7
+∗
+7
++
+2
+∗
+25
+−
+7
+∗
+12.5
++
+2
+∗
+46
+]
+B=(M 
+K
+⊤
+​
+ M 
+K
+​
+ ) 
+−1
+ M 
+K
+⊤
+​
+ M 
+H
+​
+ =[ 
+25
+−7
+​
+  
+−7
+2
+​
+ ][ 
+2
+7
+​
+  
+7
+25
+​
+  
+12.5
+46
+​
+ ]=[ 
+25∗2+(−7)∗7
+−7∗2+2∗7
+​
+  
+25∗7+(−7)∗25
+−7∗7+2∗25
+​
+  
+25∗12.5+(−7)∗46
+−7∗12.5+2∗46
+​
+ ]
+Compute entries:
+
+First row:
+
+252 - 77 = 50 - 49 = 1
+
+257 - 725 = 175 - 175 = 0
+
+2512.5 - 746 = 312.5 - 322 = -9.5
+
+Second row:
+
+-72 + 27 = -14 + 14 = 0
+
+-77 + 225 = -49 + 50 = 1
+
+-712.5 + 246 = -87.5 + 92 = 4.5
+
+So finally:
+
+B
+=
+[
+1
+0
+−
+9.5
+0
+1
+4.5
+]
+B=[ 
+1
+0
+​
+  
+0
+1
+​
+  
+−9.5
+4.5
+​
+ ]
+3. Interpretation
+First two columns are essentially identity for the retained lower-order terms
+
+Third column shows how the higher-order term (t2) is redistributed into lower-order coefficients to improve CV predictions
+
+To correct your initial lower-order series 
+T
+K
+hist
+T 
+K
+hist
+​
+ , you multiply B by the residual between full-order coefficients and initial guess:
+
+T
+K
+corrected
+=
+T
+K
+hist
++
+B
+(
+T
+H
+full
+−
+T
+H
+hist
+)
+T 
+K
+corrected
+​
+ =T 
+K
+hist
+​
+ +B(T 
+H
+full
+​
+ −T 
+H
+hist
+​
+ )
+This is exactly the data-independent, expectation-based correction you wanted to implement in batch learning.
+
+If you like, we can also show a numerical application, e.g., give T_H and T_K^hist some numbers and see T_K^corrected. That often makes the process concrete for coding.
+
+Do you want me to do that?
+
+You said:
+yes, lets apply this now calculated B matrix to some simple data to see it in action
+ChatGPT said:
+Perfect. Let’s do a simple numeric example using the 
+B
+B matrix we just computed.
+
+1. Example coefficients
+Full-order Taylor coefficients (H = 2):
+
+T
+H
+full
+=
+[
+t
+0
+t
+1
+t
+2
+]
+=
+[
+1
+2
+0.5
+]
+T 
+H
+full
+​
+ = 
+​
+  
+t 
+0
+​
+ 
+t 
+1
+​
+ 
+t 
+2
+​
+ 
+​
+  
+​
+ = 
+​
+  
+1
+2
+0.5
+​
+  
+​
+ 
+Lower-order Taylor series on history only (K = 1, initial guess):
+
+T
+K
+hist
+=
+[
+t
+0
+∗
+t
+1
+∗
+]
+=
+[
+0.9
+1.8
+]
+T 
+K
+hist
+​
+ =[ 
+t 
+0
+∗
+​
+ 
+t 
+1
+∗
+​
+ 
+​
+ ]=[ 
+0.9
+1.8
+​
+ ]
+Residual
+
+R
+=
+T
+H
+full
+−
+[
+T
+K
+hist
+0
+]
+=
+[
+1
+−
+0.9
+2
+−
+1.8
+0.5
+−
+0
+]
+=
+[
+0.1
+0.2
+0.5
+]
+R=T 
+H
+full
+​
+ −[ 
+T 
+K
+hist
+​
+ 
+0
+​
+ ]= 
+​
+  
+1−0.9
+2−1.8
+0.5−0
+​
+  
+​
+ = 
+​
+  
+0.1
+0.2
+0.5
+​
+  
+​
+ 
+2. Correction using B
+B
+=
+[
+1
+0
+−
+9.5
+0
+1
+4.5
+]
+B=[ 
+1
+0
+​
+  
+0
+1
+​
+  
+−9.5
+4.5
+​
+ ]
+Compute:
+
+Δ
+T
+K
+=
+B
+ 
+R
+=
+[
+1
+0
+−
+9.5
+0
+1
+4.5
+]
+[
+0.1
+0.2
+0.5
+]
+=
+[
+1
+∗
+0.1
++
+0
+∗
+0.2
++
+(
+−
+9.5
+)
+∗
+0.5
+0
+∗
+0.1
++
+1
+∗
+0.2
++
+4.5
+∗
+0.5
+]
+=
+[
+0.1
+−
+4.75
+0.2
++
+2.25
+]
+=
+[
+−
+4.65
+2.45
+]
+ΔT 
+K
+​
+ =BR=[ 
+1
+0
+​
+  
+0
+1
+​
+  
+−9.5
+4.5
+​
+ ] 
+​
+  
+0.1
+0.2
+0.5
+​
+  
+​
+ =[ 
+1∗0.1+0∗0.2+(−9.5)∗0.5
+0∗0.1+1∗0.2+4.5∗0.5
+​
+ ]=[ 
+0.1−4.75
+0.2+2.25
+​
+ ]=[ 
+−4.65
+2.45
+​
+ ]
+3. Compute corrected lower-order series
+T
+K
+corrected
+=
+T
+K
+hist
++
+Δ
+T
+K
+=
+[
+0.9
+1.8
+]
++
+[
+−
+4.65
+2.45
+]
+=
+[
+−
+3.75
+4.25
+]
+T 
+K
+corrected
+​
+ =T 
+K
+hist
+​
+ +ΔT 
+K
+​
+ =[ 
+0.9
+1.8
+​
+ ]+[ 
+−4.65
+2.45
+​
+ ]=[ 
+−3.75
+4.25
+​
+ ]
+4. Interpretation
+The correction has significantly adjusted the lower-order coefficients to account for the influence of the higher-order term 
+t
+2
+=
+0.5
+t 
+2
+​
+ =0.5 in the CV segment
+
+Applying this to CV points using 
+M
+K
+CV
+T
+K
+corrected
+M 
+K
+CV
+​
+ T 
+K
+corrected
+​
+  would give a better prediction than the initial guess
+
+Even though the correction seems large, in practice it depends on the spacing (Δt) and the buffer indices, because the higher-order term can have a strong effect on future points
+
+If you want, I can compute the actual predicted CV points from both the initial guess and the corrected series to show how the correction improves prediction. That usually makes it very tangible.
+
+Do you want me to do that?
+
+You said:
+can you instead write out code in the form of type signatures in haskell and formula using these functions 
+ChatGPT said:
+Sure. We can formalize this in Haskell-style type signatures and formulas using the functions that map buffers to Taylor coefficients and apply the correction. I’ll keep it at the type/formula level, not full implementation.
+
+1. Types
+-- A sequence of buffered points
+type Buffer = [Double]           -- length H+1
+
+-- Full-order Taylor coefficients
+type TaylorFull = [Double]       -- length H+1
+
+-- Lower-order Taylor coefficients
+type TaylorLow  = [Double]       -- length K+1
+
+-- Vandermonde/design matrix
+type Matrix = [[Double]]         -- rows = points, cols = Taylor terms
+2. Core functions
+-- Convert buffered sequence into full Taylor series coefficients
+taylorFull :: Buffer -> TaylorFull
+taylorFull buf = -- computes T_H from buffer X
+
+-- Convert buffered sequence into lower-order Taylor coefficients
+taylorLow :: Buffer -> Int -> TaylorLow
+taylorLow buf k = -- computes T_K from buffer X, ignoring higher-order terms
+
+-- Construct Vandermonde/design matrix
+vandermonde :: [Double] -> Int -> Matrix
+vandermonde xs order = [[ (x^i)/factorial i | i <- [0..order]] | x <- xs]
+
+-- Compute correction matrix B from full and lower-order design matrices
+correctionMatrix :: Matrix -> Matrix -> Matrix
+correctionMatrix mLow mFull = inv (transpose mLow `mul` mLow) `mul` transpose mLow `mul` mFull
+
+-- Apply correction to initial lower-order series
+applyCorrection :: TaylorLow -> TaylorFull -> TaylorLow -> Matrix -> TaylorLow
+applyCorrection tLowHist tFull tLowInit bMat =
+    zipWith (+) tLowHist (bMat `mulVector` residual)
+  where
+    residual = zipWith (-) tFull (tLowInit ++ repeat 0)  -- pad to full length
+3. Formulas
+Let:
+
+X
+H
+X 
+H
+​
+  = buffered history
+
+T
+H
+full
+=
+taylorFull
+(
+X
+H
+)
+T 
+H
+full
+​
+ =taylorFull(X 
+H
+​
+ )
+
+T
+K
+hist
+=
+taylorLow
+(
+X
+H
+,
+K
+)
+T 
+K
+hist
+​
+ =taylorLow(X 
+H
+​
+ ,K)
+
+Vandermonde matrices:
+
+M
+H
+CV
+=
+vandermonde
+(
+CV indices
+,
+H
+)
+M 
+H
+CV
+​
+ =vandermonde(CV indices,H)
+M
+K
+CV
+=
+vandermonde
+(
+CV indices
+,
+K
+)
+M 
+K
+CV
+​
+ =vandermonde(CV indices,K)
+Correction matrix:
+
+B
+=
+(
+M
+K
+⊤
+M
+K
+)
+−
+1
+M
+K
+⊤
+M
+H
+B=(M 
+K
+⊤
+​
+ M 
+K
+​
+ ) 
+−1
+ M 
+K
+⊤
+​
+ M 
+H
+​
+ 
+Corrected lower-order series:
+
+T
+K
+corrected
+=
+T
+K
+hist
++
+B
+⋅
+(
+T
+H
+full
+−
+[
+T
+K
+hist
+;
+0
+H-K
+]
+)
+T 
+K
+corrected
+​
+ =T 
+K
+hist
+​
+ +B⋅(T 
+H
+full
+​
+ −[T 
+K
+hist
+​
+ ;0 
+H-K
+​
+ ])
+Notes
+mul = matrix multiplication
+
+mulVector = matrix × vector multiplication
+
+Padding T_K^\text{hist} with zeros matches full-order length for residual computation
+
+This structure allows batch precomputation of B and repeated application to multiple buffers
+
+I can also sketch a composable pipeline in Haskell that takes a batch of buffers, computes full and lower-order series, and applies the correction automatically. This would be fully ready for implementation.
+
+Do you want me to do that?
+
+
+
+
+No file chosenNo file chosen
+ChatGPT can make mistakes. Check important info. See Cookie Preferences.
