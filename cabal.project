@@ -1,0 +1,9 @@
+
+package hmatrix
+  flags: +openblas
+
+packages:
+ src/perfect-blue
+
+package perfect-blue
+
